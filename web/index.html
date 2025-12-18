@@ -1,23 +1,103 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>IPA Dashboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IPA Dashboard</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f8;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+    header {
+        background: #4CAF50;
+        color: white;
+        padding: 20px;
+        text-align: center;
+    }
+    h1 {
+        margin: 0;
+        font-size: 2rem;
+    }
+    table {
+        border-collapse: collapse;
+        width: 90%;
+        max-width: 800px;
+        margin: 30px auto;
+        background: white;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    th, td {
+        padding: 12px 15px;
+        text-align: center;
+    }
+    th {
+        background-color: #4CAF50;
+        color: white;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+    }
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+    tr:hover {
+        background-color: #d1e7dd;
+    }
+    caption {
+        caption-side: top;
+        padding: 15px;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+    @media screen and (max-width: 600px) {
+        table, th, td {
+            font-size: 0.8rem;
+        }
+    }
+</style>
 </head>
 <body>
-  <h2>📊 IPA INSTALL STATS</h2>
-  <pre id="data">Loading...</pre>
+<header>
+    <h1>📊 IPA Dashboard</h1>
+</header>
 
-  <script>
-    fetch("../stats/install.json")
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById("data").textContent =
-          JSON.stringify(data, null, 2);
-      })
-      .catch(err => {
-        document.getElementById("data").textContent = "No data yet";
-      });
-  </script>
+<table id="ipaTable">
+    <caption>Lượt cài IPA</caption>
+    <thead>
+        <tr>
+            <th>Tên IPA</th>
+            <th>Lượt cài</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td colspan="2">Loading...</td></tr>
+    </tbody>
+</table>
+
+<script>
+fetch("../stats/install.json")
+.then(res => res.json())
+.then(data => {
+    const tbody = document.querySelector("#ipaTable tbody");
+    tbody.innerHTML = ""; // clear "Loading..."
+    for (const [ipa, count] of Object.entries(data)) {
+        const tr = document.createElement("tr");
+        const tdName = document.createElement("td");
+        tdName.textContent = ipa;
+        const tdCount = document.createElement("td");
+        tdCount.textContent = count;
+        tr.appendChild(tdName);
+        tr.appendChild(tdCount);
+        tbody.appendChild(tr);
+    }
+})
+.catch(err => {
+    const tbody = document.querySelector("#ipaTable tbody");
+    tbody.innerHTML = "<tr><td colspan='2'>Chưa có dữ liệu</td></tr>";
+});
+</script>
 </body>
 </html>
