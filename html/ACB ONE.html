@@ -1,35 +1,45 @@
 
 <!DOCTYPE html>
-<html lang="vi">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cài đặt ACB ONE</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-body{margin:0;min-height:100vh;display:flex;justify-content:center;align-items:center;background:#020617;font-family:-apple-system}
-.card{width:92%;max-width:420px;background:#0f172a;border-radius:26px;padding:28px;text-align:center;color:#e5e7eb}
-.install{display:block;padding:16px;border-radius:18px;font-size:18px;font-weight:800;text-decoration:none;color:#022c22;background:linear-gradient(135deg,#22c55e,#4ade80)}
-.copy{margin-top:16px;padding:14px;width:100%;border-radius:14px;border:none;background:#1f2937;color:#fff;font-size:15px}
-.toast{margin-top:14px;padding:12px;border-radius:12px;background:#16a34a;color:white;font-weight:700;display:none}
+body{background:#020617;display:flex;align-items:center;justify-content:center;height:100vh;font-family:-apple-system}
+.card{background:#0f172a;padding:28px;border-radius:24px;width:90%;max-width:420px;color:#fff;text-align:center}
+.install{display:block;padding:16px;border-radius:18px;background:linear-gradient(135deg,#22c55e,#4ade80);color:#022c22;font-weight:800;text-decoration:none}
+.copy{margin-top:16px;padding:14px;width:100%;border-radius:14px;background:#1f2937;color:#fff;border:none}
+.toast{margin-top:14px;padding:12px;border-radius:12px;background:#16a34a;font-weight:700;
+opacity:0;transform:translateY(10px) scale(.95);transition:.35s}
+.toast.show{opacity:1;transform:translateY(0) scale(1)}
 </style>
 </head>
 <body>
 <div class="card">
 <h2>ACB ONE</h2>
-<p>Version 1.0<br>com.heybank.acbone</p>
+<p>com.heybank.acbone<br>v1.0</p>
 
 <a class="install" href="itms-services://?action=download-manifest&url=https://huutienpham35-commits.github.io/API-Server/plist/ACB ONE.plist">📲 Install</a>
-<button class="copy" onclick="copyLink()">📋 COPY LINK</button>
-
-<div id="toast" class="toast">✅ Đã copy link cài đặt</div>
+<button class="copy" onclick="copy()">📋 COPY LINK</button>
+<div id="toast" class="toast">✅ Đã copy link</div>
 </div>
 
 <script>
-function copyLink(){
- navigator.clipboard.writeText("itms-services://?action=download-manifest&url=https://huutienpham35-commits.github.io/API-Server/plist/ACB ONE.plist");
- let t=document.getElementById("toast");
- t.style.display="block";
- setTimeout(()=>{t.style.display="none"},2000);
+function copy() {
+  // rung nhẹ
+  if (navigator.vibrate) navigator.vibrate(15);
+
+  // toast animation
+  let t=document.getElementById("toast");
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),2000);
+
+  // copy fallback
+  let i=document.createElement("input");
+  i.value="itms-services://?action=download-manifest&url=https://huutienpham35-commits.github.io/API-Server/plist/ACB ONE.plist";
+  document.body.appendChild(i);
+  i.select();
+  document.execCommand("copy");
+  document.body.removeChild(i);
 }
 </script>
 </body>
