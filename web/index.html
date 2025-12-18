@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>IPA Dashboard</title>
+</head>
+<body>
+  <h2>📊 IPA INSTALL STATS</h2>
+  <pre id="data">Loading...</pre>
+
+  <script>
+    fetch("../stats/install.json")
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("data").textContent =
+          JSON.stringify(data, null, 2);
+      })
+      .catch(err => {
+        document.getElementById("data").textContent = "No data yet";
+      });
+  </script>
+</body>
+</html>
