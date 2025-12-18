@@ -19,27 +19,22 @@ opacity:0;transform:translateY(10px) scale(.95);transition:.35s}
 <p>com.heybank.acbone<br>v1.0</p>
 
 <a class="install" href="itms-services://?action=download-manifest&url=https://huutienpham35-commits.github.io/API-Server/plist/ACB ONE.plist">📲 Install</a>
-<button class="copy" onclick="copy()">📋 COPY LINK</button>
+<button class="copy" onclick="copyLink()">📋 COPY LINK</button>
 <div id="toast" class="toast">✅ Đã copy link</div>
 </div>
 
 <script>
-function copy() {
-  // rung nhẹ
-  if (navigator.vibrate) navigator.vibrate(15);
-
-  // toast animation
-  let t=document.getElementById("toast");
-  t.classList.add("show");
-  setTimeout(()=>t.classList.remove("show"),2000);
-
-  // copy fallback
-  let i=document.createElement("input");
-  i.value="itms-services://?action=download-manifest&url=https://huutienpham35-commits.github.io/API-Server/plist/ACB ONE.plist";
-  document.body.appendChild(i);
-  i.select();
-  document.execCommand("copy");
-  document.body.removeChild(i);
+function copyLink(){
+ if (navigator.vibrate) navigator.vibrate(15);
+ let t=document.getElementById("toast");
+ t.classList.add("show");
+ setTimeout(()=>t.classList.remove("show"),2000);
+ let i=document.createElement("input");
+ i.value="itms-services://?action=download-manifest&url=https://huutienpham35-commits.github.io/API-Server/plist/ACB ONE.plist";
+ document.body.appendChild(i);
+ i.select();
+ document.execCommand("copy");
+ document.body.removeChild(i);
 }
 </script>
 </body>
