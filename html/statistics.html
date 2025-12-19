@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Statistics</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 body {
     margin:0;
@@ -38,16 +37,6 @@ h1 {
     border: 1px solid rgba(255,255,255,0.1);
     transition: transform 0.3s ease;
 }
-.card:hover {
-    transform: translateY(-5px) scale(1.01);
-}
-canvas {
-    width: 100% !important;
-    max-width: 100%;
-    background: rgba(0,0,0,0.2);
-    border-radius: 15px;
-    padding: 10px;
-}
 table {
     width: 100%;
     border-collapse: collapse;
@@ -74,20 +63,9 @@ tr:hover {
 </head>
 <body>
 <div class="container">
-<h1>📊 IPA Statistics</h1>
+<h1>📊 Recent Actions</h1>
 
 <div class="card">
-<h2>Top Apps Uploaded</h2>
-<canvas id="topAppsChart"></canvas>
-</div>
-
-<div class="card">
-<h2>Uploads Per Day</h2>
-<canvas id="uploadsDayChart"></canvas>
-</div>
-
-<div class="card">
-<h2>Recent Actions</h2>
 <table>
 <thead><tr><th>Time</th><th>User</th><th>Action</th></tr></thead>
 <tbody id="recentActions"></tbody>
@@ -98,61 +76,8 @@ tr:hover {
 fetch('https://huutienpham35-commits.github.io/API-Server/statistics/statistics.json')
 .then(res => res.json())
 .then(data => {
-    const uploads = data.filter(d => d.action.startsWith("UPLOAD"));
-    const appCounter = {};
-    uploads.forEach(d => {
-        if(appCounter[d.name]) appCounter[d.name] += 1;
-        else appCounter[d.name] = 1;
-    });
-    const topApps = Object.entries(appCounter).sort((a,b)=>b[1]-a[1]).slice(0,10);
-    const topAppLabels = topApps.map(t=>t[0]);
-    const topAppValues = topApps.map(t=>t[1]);
-
-    const topAppsChart = new Chart(document.getElementById('topAppsChart'), {
-        type: 'bar',
-        data: {
-            labels: topAppLabels,
-            datasets: [{
-                label: 'Number of Uploads',
-                data: topAppValues,
-                backgroundColor: topAppLabels.map((_,i)=>`hsl(${i*35 % 360}, 70%, 50%)`),
-                borderColor: topAppLabels.map((_,i)=>`hsl(${i*35 % 360}, 70%, 40%)`),
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive:true,
-            plugins: {
-                legend: { display: true },
-                title: { display: true, text: 'Top 10 Apps Uploads' }
-            },
-            scales:{y:{beginAtZero:true}}
-        }
-    });
-
-    const dateCounter = {};
-    uploads.forEach(d=>{const day=d.time.slice(0,10); dateCounter[day]=(dateCounter[day]||0)+1;});
-    const dateLabels = Object.keys(dateCounter).sort();
-    const dateValues = dateLabels.map(d=>dateCounter[d]);
-
-    const uploadsDayChart = new Chart(document.getElementById('uploadsDayChart'), {
-        type: 'line',
-        data: {
-            labels: dateLabels,
-            datasets: [{
-                label: 'Uploads per Day',
-                data: dateValues,
-                fill:true,
-                backgroundColor:'rgba(66,153,225,0.3)',
-                borderColor:'rgba(66,153,225,1)',
-                tension:0.3
-            }]
-        },
-        options: {responsive:true, scales:{y:{beginAtZero:true}}}
-    });
-
     const tbody = document.getElementById('recentActions');
-    data.slice(-20).reverse().forEach(d=>{
+    data.slice(-50).reverse().forEach(d=>{
         const tr = document.createElement('tr');
         tr.innerHTML = `<td>${d.time}</td><td>${d.name} (@${d.username})</td><td>${d.action}</td>`;
         tbody.appendChild(tr);
@@ -160,6 +85,7 @@ fetch('https://huutienpham35-commits.github.io/API-Server/statistics/statistics.
 })
 .catch(err=>console.error("Failed to load statistics:", err));
 </script>
+
 </div>
 </body>
 </html>
