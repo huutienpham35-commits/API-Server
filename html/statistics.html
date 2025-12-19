@@ -7,21 +7,20 @@
 
 <style>
 :root {
-    --bg: rgba(0,0,0,.55);
-    --card: rgba(255,255,255,.08);
+    --bg: rgba(0,0,0,.65);
+    --card: rgba(255,255,255,.10);
     --text: #fff;
     --accent: #22c55e;
 }
 
 body.light {
-    --bg: rgba(255,255,255,.65);
-    --card: rgba(0,0,0,.06);
+    --bg: rgba(255,255,255,.9);
+    --card: rgba(0,0,0,.05);
     --text: #020617;
 }
 
 * {
     box-sizing:border-box;
-    transition: background .35s,color .35s;
 }
 
 body {
@@ -35,31 +34,29 @@ body {
 
 .container {
     width:95%;
-    max-width:1200px;
-    margin:20px auto;
-    padding:24px;
+    max-width:1100px;
+    margin:16px auto;
+    padding:18px;
     background:var(--bg);
-    backdrop-filter:blur(16px);
-    border-radius:26px;
-    box-shadow:0 25px 60px rgba(0,0,0,.6);
+    border-radius:22px;
+    box-shadow:0 20px 40px rgba(0,0,0,.55);
 }
 
 .header {
     display:flex;
-    flex-wrap:wrap;
-    gap:12px;
     justify-content:space-between;
     align-items:center;
+    margin-bottom:14px;
 }
 
 h1 {
     margin:0;
-    font-size:2.3em;
+    font-size:1.9em;
 }
 
 .toggle {
-    padding:10px 16px;
-    border-radius:14px;
+    padding:8px 12px;
+    border-radius:10px;
     background:var(--card);
     border:none;
     color:var(--text);
@@ -69,54 +66,54 @@ h1 {
 
 .stats {
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-    gap:16px;
-    margin:24px 0;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-bottom:14px;
 }
 
 .stat {
     background:var(--card);
-    border-radius:18px;
-    padding:18px;
+    border-radius:14px;
+    padding:10px 8px;
     text-align:center;
-    backdrop-filter:blur(14px);
 }
 
 .stat h2 {
     margin:0;
-    font-size:2em;
+    font-size:1.4em;
     color:var(--accent);
 }
 
+.stat p {
+    margin:4px 0 0;
+    font-size:.85em;
+}
+
 .controls {
-    display:flex;
-    flex-wrap:wrap;
-    gap:12px;
-    margin-bottom:16px;
+    margin-bottom:12px;
 }
 
 .controls input {
-    flex:1;
-    min-width:200px;
-    padding:12px 16px;
-    border-radius:14px;
+    width:100%;
+    padding:10px 14px;
+    border-radius:12px;
     border:none;
     outline:none;
     background:var(--card);
     color:var(--text);
+    font-size:.9em;
 }
 
 .card {
     background:var(--card);
-    border-radius:22px;
-    padding:18px;
-    backdrop-filter:blur(18px);
+    border-radius:18px;
+    padding:12px;
 }
 
 .table-wrapper {
-    max-height:520px;
+    max-height:380px;   /* 👈 THẤP HƠN */
     overflow-y:auto;
-    border-radius:16px;
+    border-radius:12px;
 }
 
 table {
@@ -127,34 +124,40 @@ table {
 thead th {
     position:sticky;
     top:0;
-    background:rgba(0,0,0,.35);
+    background:rgba(0,0,0,.55);
 }
 
 body.light thead th {
-    background:rgba(255,255,255,.7);
+    background:rgba(255,255,255,.85);
 }
 
 th,td {
-    padding:12px 14px;
+    padding:8px 10px;
+    font-size:.85em;
     white-space:nowrap;
     vertical-align:middle;
 }
 
 tbody tr:nth-child(even) {
-    background:rgba(255,255,255,.08);
+    background:rgba(255,255,255,.07);
 }
 
 tbody tr:hover {
-    background:rgba(255,255,255,.18);
+    background:rgba(255,255,255,.15);
 }
 
 @media(max-width:600px){
-    h1 {font-size:1.7em}
-    th,td {font-size:.9em}
+    h1 {font-size:1.5em}
+    .stat h2 {font-size:1.2em}
 }
 
-::-webkit-scrollbar{width:8px}
-::-webkit-scrollbar-thumb{background:rgba(255,255,255,.35);border-radius:10px}
+::-webkit-scrollbar {
+    width:5px;     /* 👈 SCROLL NHỎ */
+}
+::-webkit-scrollbar-thumb {
+    background:rgba(255,255,255,.4);
+    border-radius:6px;
+}
 </style>
 </head>
 
@@ -163,17 +166,17 @@ tbody tr:hover {
 
 <div class="header">
     <h1>📊 Statistics</h1>
-    <button class="toggle" onclick="toggleTheme()">🌗 Theme</button>
+    <button class="toggle" onclick="toggleTheme()">🌗</button>
 </div>
 
 <div class="stats">
-    <div class="stat"><h2 id="total">0</h2><p>Total Actions</p></div>
+    <div class="stat"><h2 id="total">0</h2><p>Total</p></div>
     <div class="stat"><h2 id="today">0</h2><p>Today</p></div>
     <div class="stat"><h2 id="users">0</h2><p>Users</p></div>
 </div>
 
 <div class="controls">
-    <input id="search" placeholder="🔍 Search user / action..." oninput="render()">
+    <input id="search" placeholder="🔍 Search user / action" oninput="render()">
 </div>
 
 <div class="card">
@@ -199,14 +202,11 @@ fetch('https://huutienpham35-commits.github.io/API-Server/statistics/statistics.
 
 function init(){
     document.getElementById("total").innerText=DATA.length;
-
     let today=new Date().toISOString().slice(0,10);
     document.getElementById("today").innerText=
         DATA.filter(x=>x.time.startsWith(today)).length;
-
     document.getElementById("users").innerText=
         new Set(DATA.map(x=>x.username)).size;
-
     render();
 }
 
@@ -214,7 +214,6 @@ function render(){
     let q=document.getElementById("search").value.toLowerCase();
     let tbody=document.getElementById("rows");
     tbody.innerHTML="";
-
     DATA.slice().reverse().filter(x=>
         x.username.toLowerCase().includes(q) ||
         x.action.toLowerCase().includes(q) ||
