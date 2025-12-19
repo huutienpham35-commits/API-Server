@@ -4,88 +4,235 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Statistics</title>
+
 <style>
+:root {
+    --bg: rgba(0,0,0,.55);
+    --card: rgba(255,255,255,.08);
+    --text: #fff;
+    --accent: #22c55e;
+}
+
+body.light {
+    --bg: rgba(255,255,255,.65);
+    --card: rgba(0,0,0,.06);
+    --text: #020617;
+}
+
+* {
+    box-sizing:border-box;
+    transition: background .35s,color .35s;
+}
+
 body {
     margin:0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: url('https://sf-static.upanhlaylink.com/img/image_202512191be4d9d448552d56d2e0665cd14404e4.jpg') no-repeat center center fixed;
-    background-size: cover;
-    color:#fff;
+    min-height:100vh;
+    font-family:system-ui,-apple-system;
+    background:url('https://sf-static.upanhlaylink.com/img/image_202512191be4d9d448552d56d2e0665cd14404e4.jpg')
+        no-repeat center/cover fixed;
+    color:var(--text);
 }
+
 .container {
-    width: 95%;
-    max-width: 95%;
-    margin: 20px auto;
-    padding: 40px;
-    background: rgba(0,0,0,0.5);
-    border-radius: 25px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    width:95%;
+    max-width:1200px;
+    margin:20px auto;
+    padding:24px;
+    background:var(--bg);
+    backdrop-filter:blur(16px);
+    border-radius:26px;
+    box-shadow:0 25px 60px rgba(0,0,0,.6);
 }
+
+.header {
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    justify-content:space-between;
+    align-items:center;
+}
+
 h1 {
-    text-align: center;
-    font-size: 3em;
-    margin-bottom: 40px;
-    text-shadow: 3px 3px 15px rgba(0,0,0,0.7);
+    margin:0;
+    font-size:2.3em;
 }
+
+.toggle {
+    padding:10px 16px;
+    border-radius:14px;
+    background:var(--card);
+    border:none;
+    color:var(--text);
+    cursor:pointer;
+    font-weight:700;
+}
+
+.stats {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:16px;
+    margin:24px 0;
+}
+
+.stat {
+    background:var(--card);
+    border-radius:18px;
+    padding:18px;
+    text-align:center;
+    backdrop-filter:blur(14px);
+}
+
+.stat h2 {
+    margin:0;
+    font-size:2em;
+    color:var(--accent);
+}
+
+.controls {
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-bottom:16px;
+}
+
+.controls input {
+    flex:1;
+    min-width:200px;
+    padding:12px 16px;
+    border-radius:14px;
+    border:none;
+    outline:none;
+    background:var(--card);
+    color:var(--text);
+}
+
 .card {
-    background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
-    backdrop-filter: blur(15px);
-    border-radius: 20px;
-    padding: 30px;
-    margin-bottom: 40px;
-    box-shadow: 0 12px 32px rgba(0,0,0,0.5);
-    border: 1px solid rgba(255,255,255,0.1);
-    transition: transform 0.3s ease;
+    background:var(--card);
+    border-radius:22px;
+    padding:18px;
+    backdrop-filter:blur(18px);
 }
+
+.table-wrapper {
+    max-height:520px;
+    overflow-y:auto;
+    border-radius:16px;
+}
+
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background: rgba(0,0,0,0.3);
-    border-radius: 15px;
-    overflow: hidden;
+    width:100%;
+    border-collapse:collapse;
 }
-th, td {
-    padding: 12px 15px;
-    text-align: left;
+
+thead th {
+    position:sticky;
+    top:0;
+    background:rgba(0,0,0,.35);
 }
-th {
-    background: rgba(255,255,255,0.2);
+
+body.light thead th {
+    background:rgba(255,255,255,.7);
 }
-tr:nth-child(even) {
-    background: rgba(255,255,255,0.1);
+
+th,td {
+    padding:12px 14px;
+    white-space:nowrap;
+    vertical-align:middle;
 }
-tr:hover {
-    background: rgba(255,255,255,0.2);
-    transition: background 0.3s;
+
+tbody tr:nth-child(even) {
+    background:rgba(255,255,255,.08);
 }
+
+tbody tr:hover {
+    background:rgba(255,255,255,.18);
+}
+
+@media(max-width:600px){
+    h1 {font-size:1.7em}
+    th,td {font-size:.9em}
+}
+
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.35);border-radius:10px}
 </style>
 </head>
+
 <body>
 <div class="container">
-<h1>📊 Recent Actions</h1>
+
+<div class="header">
+    <h1>📊 Statistics</h1>
+    <button class="toggle" onclick="toggleTheme()">🌗 Theme</button>
+</div>
+
+<div class="stats">
+    <div class="stat"><h2 id="total">0</h2><p>Total Actions</p></div>
+    <div class="stat"><h2 id="today">0</h2><p>Today</p></div>
+    <div class="stat"><h2 id="users">0</h2><p>Users</p></div>
+</div>
+
+<div class="controls">
+    <input id="search" placeholder="🔍 Search user / action..." oninput="render()">
+</div>
 
 <div class="card">
+<div class="table-wrapper">
 <table>
-<thead><tr><th>Time</th><th>User</th><th>Action</th></tr></thead>
-<tbody id="recentActions"></tbody>
+<thead>
+<tr><th>Time</th><th>User</th><th>Action</th></tr>
+</thead>
+<tbody id="rows"></tbody>
 </table>
+</div>
+</div>
+
 </div>
 
 <script>
+let DATA=[];
+let light=false;
+
 fetch('https://huutienpham35-commits.github.io/API-Server/statistics/statistics.json')
-.then(res => res.json())
-.then(data => {
-    const tbody = document.getElementById('recentActions');
-    data.slice(-50).reverse().forEach(d=>{
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${d.time}</td><td>${d.name} (@${d.username})</td><td>${d.action}</td>`;
+.then(r=>r.json())
+.then(d=>{DATA=d;init();});
+
+function init(){
+    document.getElementById("total").innerText=DATA.length;
+
+    let today=new Date().toISOString().slice(0,10);
+    document.getElementById("today").innerText=
+        DATA.filter(x=>x.time.startsWith(today)).length;
+
+    document.getElementById("users").innerText=
+        new Set(DATA.map(x=>x.username)).size;
+
+    render();
+}
+
+function render(){
+    let q=document.getElementById("search").value.toLowerCase();
+    let tbody=document.getElementById("rows");
+    tbody.innerHTML="";
+
+    DATA.slice().reverse().filter(x=>
+        x.username.toLowerCase().includes(q) ||
+        x.action.toLowerCase().includes(q) ||
+        x.name.toLowerCase().includes(q)
+    ).forEach(x=>{
+        let tr=document.createElement("tr");
+        tr.innerHTML=`<td>${x.time}</td>
+                      <td>${x.name} (@${x.username})</td>
+                      <td>${x.action}</td>`;
         tbody.appendChild(tr);
     });
-})
-.catch(err=>console.error("Failed to load statistics:", err));
+}
+
+function toggleTheme(){
+    light=!light;
+    document.body.classList.toggle("light",light);
+}
 </script>
 
-</div>
 </body>
 </html>
