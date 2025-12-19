@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Statistics</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body {
+    margin:0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: url('https://sf-static.upanhlaylink.com/img/image_202512191be4d9d448552d56d2e0665cd14404e4.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color:#fff;
+}
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px;
+    background: rgba(0,0,0,0.5);
+    border-radius: 25px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+}
+h1 {
+    text-align: center;
+    font-size: 3em;
+    margin-bottom: 40px;
+    text-shadow: 3px 3px 15px rgba(0,0,0,0.7);
+}
+.card {
+    background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 40px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: transform 0.3s ease;
+}
+.card:hover {
+    transform: translateY(-5px) scale(1.01);
+}
+canvas {
+    max-width: 100%;
+    background: rgba(0,0,0,0.2);
+    border-radius: 15px;
+    padding: 10px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 15px;
+    overflow: hidden;
+}
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+}
+th {
+    background: rgba(255,255,255,0.2);
+}
+tr:nth-child(even) {
+    background: rgba(255,255,255,0.1);
+}
+tr:hover {
+    background: rgba(255,255,255,0.2);
+    transition: background 0.3s;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>📊 IPA Statistics</h1>
+
+<div class="card">
+<h2>Top Apps Uploaded</h2>
+<canvas id="topAppsChart"></canvas>
+</div>
+
+<div class="card">
+<h2>Uploads Per Day</h2>
+<canvas id="uploadsDayChart"></canvas>
+</div>
+
+<div class="card">
+<h2>Recent Actions</h2>
+<table>
+<thead><tr><th>Time</th><th>User</th><th>Action</th></tr></thead>
+<tbody id="recentActions">
+</tbody>
+</table>
+</div>
+
+<script>
+fetch('https://huutienpham35-commits.github.io/API-Server/statistics/statistics.json')
+.then(res => res.json())
+.then(data => {
+    const uploads = data.filter(d => d.action.startsWith("UPLOAD"));
+    const appCounter = {};
+    uploads.forEach(d => {
+        if(appCounter[d.name]) appCounter[d.name] += 1;
+        else appCounter[d.name] = 1;
+    });
+    const topApps = Object.entries(appCounter).sort((a,b)=>b[1]-a[1]).slice(0,10);
+    const topAppLabels = topApps.map(t=>t[0]);
+    const topAppValues = topApps.map(t=>t[1]);
+
+    const topAppsChart = new Chart(document.getElementById('topAppsChart'), {
+        type: 'bar',
+        data: {
+            labels: topAppLabels,
+            datasets: [{
+                label: 'Number of Uploads',
+                data: topAppValues,
+                backgroundColor: topAppLabels.map((_,i)=>`hsl(${i*35 % 360}, 70%, 50%)`),
+                borderColor: topAppLabels.map((_,i)=>`hsl(${i*35 % 360}, 70%, 40%)`),
+                borderWidth: 1
+            }]
+        },
+        options: {responsive:true, scales:{y:{beginAtZero:true}}}
+    });
+
+    const dateCounter = {};
+    uploads.forEach(d=>{const day=d.time.slice(0,10); dateCounter[day]=(dateCounter[day]||0)+1;});
+    const dateLabels = Object.keys(dateCounter).sort();
+    const dateValues = dateLabels.map(d=>dateCounter[d]);
+
+    const uploadsDayChart = new Chart(document.getElementById('uploadsDayChart'), {
+        type: 'line',
+        data: {
+            labels: dateLabels,
+            datasets: [{
+                label: 'Uploads per Day',
+                data: dateValues,
+                fill:true,
+                backgroundColor:'rgba(66,153,225,0.3)',
+                borderColor:'rgba(66,153,225,1)',
+                tension:0.3
+            }]
+        },
+        options: {responsive:true, scales:{y:{beginAtZero:true}}}
+    });
+
+    const tbody = document.getElementById('recentActions');
+    data.slice(-20).reverse().forEach(d=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${d.time}</td><td>${d.name} (@${d.username})</td><td>${d.action}</td>`;
+        tbody.appendChild(tr);
+    });
+})
+.catch(err=>console.error("Failed to load statistics:", err));
+</script>
+</div>
+</body>
+</html>
