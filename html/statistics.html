@@ -14,8 +14,9 @@ body {
     color:#fff;
 }
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
+    width: 95%;
+    max-width: 95%;
+    margin: 20px auto;
     padding: 40px;
     background: rgba(0,0,0,0.5);
     border-radius: 25px;
@@ -41,6 +42,7 @@ h1 {
     transform: translateY(-5px) scale(1.01);
 }
 canvas {
+    width: 100% !important;
     max-width: 100%;
     background: rgba(0,0,0,0.2);
     border-radius: 15px;
@@ -88,8 +90,7 @@ tr:hover {
 <h2>Recent Actions</h2>
 <table>
 <thead><tr><th>Time</th><th>User</th><th>Action</th></tr></thead>
-<tbody id="recentActions">
-</tbody>
+<tbody id="recentActions"></tbody>
 </table>
 </div>
 
@@ -119,7 +120,14 @@ fetch('https://huutienpham35-commits.github.io/API-Server/statistics/statistics.
                 borderWidth: 1
             }]
         },
-        options: {responsive:true, scales:{y:{beginAtZero:true}}}
+        options: {
+            responsive:true,
+            plugins: {
+                legend: { display: true },
+                title: { display: true, text: 'Top 10 Apps Uploads' }
+            },
+            scales:{y:{beginAtZero:true}}
+        }
     });
 
     const dateCounter = {};
