@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Install App</title>
+<style>
+body {
+    background:#020617;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:100vh;
+    font-family:-apple-system, sans-serif;
+    margin:0;
+}
+.card {
+    background:#0f172a;
+    padding:28px;
+    border-radius:24px;
+    width:90%;
+    max-width:420px;
+    color:#fff;
+    text-align:center;
+    box-shadow:0 12px 32px rgba(0,0,0,0.5);
+}
+.install {
+    display:block;
+    padding:16px;
+    border-radius:18px;
+    background:linear-gradient(135deg,#22c55e,#4ade80);
+    color:#022c22;
+    font-weight:800;
+    text-decoration:none;
+    margin-bottom:16px;
+}
+.copy {
+    padding:14px;
+    width:100%;
+    border-radius:14px;
+    background:#1f2937;
+    color:#fff;
+    border:none;
+    cursor:pointer;
+}
+.toast {
+    margin-top:14px;
+    padding:12px;
+    border-radius:12px;
+    background:#16a34a;
+    font-weight:700;
+    opacity:0;
+    transform:translateY(10px) scale(.95);
+    transition:.35s;
+}
+.toast.show {
+    opacity:1;
+    transform:translateY(0) scale(1);
+}
+</style>
+</head>
+<body>
+<div class="card">
+  <h2>ESign</h2>
+  <p>org.cocoapods.QMUIResources<br>v4.6.0</p>
+
+  <a class="install" href="itms-services://?action=download-manifest&url=https://huutienpham35-commits.github.io/API-Server/plist/codevndotnet-signed.plist">📲 Install</a>
+  <button class="copy" onclick="copyLink()">📋 COPY LINK</button>
+  <div id="toast" class="toast">✅ Đã copy link</div>
+</div>
+
+<script>
+function copyLink(){
+    if(navigator.vibrate) navigator.vibrate(15);
+    let t=document.getElementById("toast");
+    t.classList.add("show");
+    setTimeout(()=>t.classList.remove("show"),2000);
+    let i=document.createElement("input");
+    i.value="itms-services://?action=download-manifest&url=https://huutienpham35-commits.github.io/API-Server/plist/codevndotnet-signed.plist";
+    document.body.appendChild(i);
+    i.select();
+    document.execCommand("copy");
+    document.body.removeChild(i);
+}
+</script>
+</body>
+</html>
